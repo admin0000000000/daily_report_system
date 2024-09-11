@@ -24,6 +24,16 @@
                     <td><fmt:formatDate value='${reportDay}' pattern='yyyy-MM-dd' /></td>
                 </tr>
                 <tr>
+                    <th>出勤時刻</th>
+                    <fmt:parseDate value="${report.clock_in}" pattern="yyyy-MM-dd'T'HH:mm" var="clock_in" type="date" />
+                     <td><fmt:formatDate value='${clock_in}' pattern="yyyy-MM-dd HH:mm" /></td>
+                </tr>
+                <tr>
+                    <th>退勤時刻</th>
+                    <fmt:parseDate value="${report.clock_out}" pattern="yyyy-MM-dd'T'HH:mm" var="clock_out" type="date" />
+                     <td><fmt:formatDate value='${clock_out}' pattern="yyyy-MM-dd HH:mm" /></td>
+                </tr>
+                <tr>
                     <th>内容</th>
                     <td><pre><c:out value="${report.content}" /></pre></td>
                 </tr>

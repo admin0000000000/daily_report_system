@@ -24,7 +24,12 @@ public class ReportConverter {
                 rv.getTitle(),
                 rv.getContent(),
                 rv.getCreatedAt(),
-                rv.getUpdatedAt());
+                rv.getUpdatedAt(),
+                rv.getClock_in(),
+                rv.getClock_out());
+
+
+
     }
 
     /**
@@ -45,7 +50,10 @@ public class ReportConverter {
                 r.getTitle(),
                 r.getContent(),
                 r.getCreatedAt(),
-                r.getUpdatedAt());
+                r.getUpdatedAt(),
+                r.getClock_in(),
+                r.getClock_out());
+
     }
 
     /**
@@ -76,7 +84,8 @@ public class ReportConverter {
         r.setContent(rv.getContent());
         r.setCreatedAt(rv.getCreatedAt());
         r.setUpdatedAt(rv.getUpdatedAt());
-
+        r.setClock_in(rv.getClock_in());
+        r.setClock_out(rv.getClock_out());
     }
 
 }

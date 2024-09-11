@@ -22,7 +22,11 @@ public enum MessageConst {
     E_NOEMP_CODE("社員番号を入力してください。"),
     E_EMP_CODE_EXIST("入力された社員番号の情報は既に存在しています。"),
     E_NOTITLE("タイトルを入力してください。"),
-    E_NOCONTENT("内容を入力してください。");
+    E_NOCONTENT("内容を入力してください。"),
+    E_NOCLOCK_IN("出勤日時を入力してください。"),
+    E_NOCLOCK_OUT("退勤日時を入力してください。"),
+    E_CLOCK_COMPARE("退勤時刻より出勤時刻の値が大きすぎます。"),
+    E_REP_DATE_EXIST("同じ日付の日報が重複しています。");
 
 
     /**

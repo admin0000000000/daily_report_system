@@ -25,6 +25,19 @@
 <input type="text" name="${AttributeConst.REP_TITLE.getValue()}" id="${AttributeConst.REP_TITLE.getValue()}" value="${report.title}" />
 <br /><br />
 
+<fmt:parseDate value="${report.clock_in}" pattern="yyyy-MM-dd'T'HH:mm" var="clock_in" type="date" />
+<label for="${AttributeConst.REP_CLOCK_IN.getValue()}">出勤日時</label><br />
+<input type="datetime-local" name="${AttributeConst.REP_CLOCK_IN.getValue()}" id="${AttributeConst.REP_CLOCK_IN.getValue()}" value="<fmt:formatDate value='${clock_in}' pattern="yyyy-MM-dd HH:mm" />" />
+<br /><br />
+
+
+
+<fmt:parseDate value="${report.clock_out}" pattern="yyyy-MM-dd'T'HH:mm" var="clock_out" type="date" />
+<label for="${AttributeConst.REP_CLOCK_OUT.getValue()}">退勤日時</label><br />
+<input type="datetime-local" name="${AttributeConst.REP_CLOCK_OUT.getValue()}" id="${AttributeConst.REP_CLOCK_OUT.getValue()}" value="<fmt:formatDate value='${clock_out}' pattern="yyyy-MM-dd HH:mm" />" />
+<br /><br />
+
+
 <label for="${AttributeConst.REP_CONTENT.getValue()}">内容</label><br />
 <textarea  name="${AttributeConst.REP_CONTENT.getValue()}" id="${AttributeConst.REP_CONTENT.getValue()}" rows="10" cols="50">${report.content}</textarea>
 <br /><br />

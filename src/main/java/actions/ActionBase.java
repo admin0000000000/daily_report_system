@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import constants.AttributeConst;
 import constants.ForwardConst;
 import constants.PropertyConst;
+
 
 /**
  * 各Actionクラスの親クラス。共通処理を行う。
@@ -184,6 +186,15 @@ public abstract class ActionBase {
             return LocalDate.now();
         }
         return LocalDate.parse(strDate);
+    }
+
+    /**
+     * 文字列をLocalDateTime型に変換する
+     * @param strDate 変換前文字列
+     * @return 変換後LocalDateインスタンス
+     */
+    protected LocalDateTime toLocalDateTime(String strDateTime) {
+        return LocalDateTime.parse(strDateTime);
     }
 
     /**

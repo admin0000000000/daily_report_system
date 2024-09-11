@@ -40,6 +40,10 @@ public interface JpaConst {
     String REP_COL_CREATED_AT = "created_at"; //登録日時
     String REP_COL_UPDATED_AT = "updated_at"; //更新日時
 
+    String REP_COL_CLOCK_IN = "clock_in"; //出勤時刻
+    String REP_COL_CLOCK_OUT = "clock_out"; //退勤時刻
+
+
     //Entity名
     String ENTITY_EMP = "employee"; //従業員
     String ENTITY_REP = "report"; //日報
@@ -48,6 +52,7 @@ public interface JpaConst {
     String JPQL_PARM_CODE = "code"; //社員番号
     String JPQL_PARM_PASSWORD = "password"; //パスワード
     String JPQL_PARM_EMPLOYEE = "employee"; //従業員
+    String JPQL_PARM_REP_DATE ="report_date";//いつの日報かを示す日付
 
     //NamedQueryの nameとquery
     //全ての従業員をidの降順に取得する
@@ -62,6 +67,9 @@ public interface JpaConst {
     //指定した社員番号を保持する従業員の件数を取得する
     String Q_EMP_COUNT_REGISTERED_BY_CODE = ENTITY_EMP + ".countRegisteredByCode";
     String Q_EMP_COUNT_REGISTERED_BY_CODE_DEF = "SELECT COUNT(e) FROM Employee AS e WHERE e.code = :" + JPQL_PARM_CODE;
+    //指定した日付を保持する日報の件数を取得する
+    String Q_REP_COUNT_REGISTERED_BY_REP_DATE = ENTITY_REP + ".countRegisteredByDate";
+    String Q_REP_COUNT_REGISTERED_BY_REP_DATE_DEF = "SELECT COUNT(r) FROM Report AS r WHERE r.reportDate = :" + JPQL_PARM_REP_DATE;
     //全ての日報をidの降順に取得する
     String Q_REP_GET_ALL = ENTITY_REP + ".getAll";
     String Q_REP_GET_ALL_DEF = "SELECT r FROM Report AS r ORDER BY r.id DESC";

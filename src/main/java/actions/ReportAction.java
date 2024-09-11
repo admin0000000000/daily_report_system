@@ -2,6 +2,7 @@ package actions;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -103,6 +104,24 @@ public class ReportAction extends ActionBase {
                 day = LocalDate.parse(getRequestParam(AttributeConst.REP_DATE));
             }
 
+            //出勤時刻が入力されていなければ、エラーを表示
+            LocalDateTime clock_in = null;
+            if (getRequestParam(AttributeConst.REP_CLOCK_IN) == null
+                    || getRequestParam(AttributeConst.REP_CLOCK_IN).equals("")) {
+                clock_in = null;
+            } else {
+                clock_in = LocalDateTime.parse(getRequestParam(AttributeConst.REP_CLOCK_IN));
+            }
+
+            //退勤時刻が入力されていなければ、エラーを表示
+            LocalDateTime clock_out = null;
+            if (getRequestParam(AttributeConst.REP_CLOCK_OUT) == null
+                    || getRequestParam(AttributeConst.REP_CLOCK_OUT).equals("")) {
+                clock_out = null;
+            } else {
+                clock_out = LocalDateTime.parse(getRequestParam(AttributeConst.REP_CLOCK_OUT));
+            }
+
             //セッションからログイン中の従業員情報を取得
             EmployeeView ev = (EmployeeView) getSessionScope(AttributeConst.LOGIN_EMP);
 
@@ -114,7 +133,11 @@ public class ReportAction extends ActionBase {
                     getRequestParam(AttributeConst.REP_TITLE),
                     getRequestParam(AttributeConst.REP_CONTENT),
                     null,
-                    null);
+                    null,
+                    clock_in,
+                    clock_out);
+
+
 
             //日報情報登録
             List<String> errors = service.create(rv);
@@ -203,6 +226,23 @@ public class ReportAction extends ActionBase {
         //CSRF対策 tokenのチェック
         if (checkToken()) {
 
+            //出勤時刻が入力されていなければ、エラーを表示
+            LocalDateTime clock_in = null;
+            if (getRequestParam(AttributeConst.REP_CLOCK_IN) == null
+                    || getRequestParam(AttributeConst.REP_CLOCK_IN).equals("")) {
+                clock_in = null;
+            } else {
+                clock_in = LocalDateTime.parse(getRequestParam(AttributeConst.REP_CLOCK_IN));
+            }
+
+            //退勤時刻が入力されていなければ、エラーを表示
+            LocalDateTime clock_out = null;
+            if (getRequestParam(AttributeConst.REP_CLOCK_OUT) == null
+                    || getRequestParam(AttributeConst.REP_CLOCK_OUT).equals("")) {
+                clock_out = null;
+            } else {
+                clock_out = LocalDateTime.parse(getRequestParam(AttributeConst.REP_CLOCK_OUT));
+            }
             //idを条件に日報データを取得する
             ReportView rv = service.findOne(toNumber(getRequestParam(AttributeConst.REP_ID)));
 
@@ -210,6 +250,10 @@ public class ReportAction extends ActionBase {
             rv.setReportDate(toLocalDate(getRequestParam(AttributeConst.REP_DATE)));
             rv.setTitle(getRequestParam(AttributeConst.REP_TITLE));
             rv.setContent(getRequestParam(AttributeConst.REP_CONTENT));
+            rv.setClock_in(clock_in);
+            rv.setClock_out(clock_out);
+
+
 
             //日報データを更新する
             List<String> errors = service.update(rv);
@@ -234,6 +278,6 @@ public class ReportAction extends ActionBase {
 
             }
         }
-    }    
-    
+    }
+
 }
