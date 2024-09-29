@@ -26,7 +26,10 @@ public enum MessageConst {
     E_NOCLOCK_IN("出勤日時を入力してください。"),
     E_NOCLOCK_OUT("退勤日時を入力してください。"),
     E_CLOCK_COMPARE("退勤時刻より出勤時刻の値が大きすぎます。"),
-    E_REP_DATE_EXIST("同じ日付の日報が重複しています。");
+    E_REP_DATE_EXIST("同じ日付の日報が重複しています。"),
+    E_CLOCK_IN_EXIST("出勤日時の値が不正です。"),
+    E_CLOCK_OUT_EXIST("退勤日時の値が不正です。"),
+    E_REP_ID_EXIST("同じ従業員IDの日報が重複しています。");
 
 
     /**

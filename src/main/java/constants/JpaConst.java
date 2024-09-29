@@ -49,10 +49,14 @@ public interface JpaConst {
     String ENTITY_REP = "report"; //日報
 
     //JPQL内パラメータ
+    String JPQL_PARM_REP_EMP = "employee_id"; //日報を作成した従業員のid
     String JPQL_PARM_CODE = "code"; //社員番号
     String JPQL_PARM_PASSWORD = "password"; //パスワード
     String JPQL_PARM_EMPLOYEE = "employee"; //従業員
     String JPQL_PARM_REP_DATE ="report_date";//いつの日報かを示す日付
+
+    String JPQL_PARM_REP_AFTERDATE ="afterreport_date";//いつの日報かを示す日付
+    String JPQL_PARM_REP_BEFOREDATE ="beforeport_date";//いつの日報かを示す日付
 
     //NamedQueryの nameとquery
     //全ての従業員をidの降順に取得する
@@ -82,5 +86,19 @@ public interface JpaConst {
     //指定した従業員が作成した日報の件数を取得する
     String Q_REP_COUNT_ALL_MINE = ENTITY_REP + ".countAllMine";
     String Q_REP_COUNT_ALL_MINE_DEF = "SELECT COUNT(r) FROM Report AS r WHERE r.employee = :" + JPQL_PARM_EMPLOYEE;
+
+
+    //指定した日付の１日前の日報の件数を取得する
+    String Q_REP_GET_REGISTERED_BY_REP_BEFOREDATE = ENTITY_REP + ".getRegisteredByBeforeDate";
+    String Q_REP_GET_REGISTERED_BY_REP_BEFOREDATE_DEF = "SELECT r FROM Report AS r WHERE r.reportDate = :" + JPQL_PARM_REP_BEFOREDATE;
+    //指定した日付の１日後の日報の件数を取得する
+    String Q_REP_GET_REGISTERED_BY_REP_AFTERDATE = ENTITY_REP + ".getRegisteredByAfterDate";
+    String Q_REP_GET_REGISTERED_BY_REP_AFTERDATE_DEF = "SELECT r FROM Report AS r WHERE r.reportDate = :" + JPQL_PARM_REP_AFTERDATE;
+    //指定した日付とIDを保持する日報の件数を取得する
+    String Q_REP_COUNT_REGISTERED_BY_REP_DATE_AND_EMP = ENTITY_REP + ".countRegisteredByDateAndEmp";
+    String Q_REP_COUNT_REGISTERED_BY_REP_DATE_AND_EMP_DEF = "SELECT COUNT(r) FROM Report AS r WHERE r.reportDate  = :" + JPQL_PARM_REP_DATE+"AND r.employee = :" + JPQL_PARM_REP_EMP;
+    //指定した日付を保持する日報の件数を取得する
+    String Q_REP_GET_REGISTERED_BY_REP_DATE = ENTITY_REP + ".getRegisteredById";
+    String Q_REP_GET_REGISTERED_BY_REP_DATE_DEF = "SELECT r FROM Report AS r WHERE r.reportDate = :" + JPQL_PARM_REP_DATE;
 
 }

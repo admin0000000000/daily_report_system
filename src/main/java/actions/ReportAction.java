@@ -125,6 +125,12 @@ public class ReportAction extends ActionBase {
             //セッションからログイン中の従業員情報を取得
             EmployeeView ev = (EmployeeView) getSessionScope(AttributeConst.LOGIN_EMP);
 
+            LocalDate report_date = (toLocalDate(getRequestParam(AttributeConst.REP_DATE)));
+            ReportView ra = service.countByAfterDate(report_date);
+            ReportView rb = service.countByBeforeDate(report_date);
+            ReportView id = service.countByreport_Id(report_date);
+//            String employee_id = service.countByreport_Date_and_Id(report_date,employee_id);
+
             //パラメータの値をもとに日報情報のインスタンスを作成する
             ReportView rv = new ReportView(
                     null,
@@ -140,7 +146,7 @@ public class ReportAction extends ActionBase {
 
 
             //日報情報登録
-            List<String> errors = service.create(rv);
+            List<String> errors = service.create(id,ra,rb,ev,service,rv,clock_in,clock_out);
 
             if (errors.size() > 0) {
                 //登録中にエラーがあった場合
@@ -243,6 +249,38 @@ public class ReportAction extends ActionBase {
             } else {
                 clock_out = LocalDateTime.parse(getRequestParam(AttributeConst.REP_CLOCK_OUT));
             }
+
+            //セッションからログイン中の従業員情報を取得
+            EmployeeView ev = (EmployeeView) getSessionScope(AttributeConst.LOGIN_EMP);
+
+            LocalDate report_date = (toLocalDate(getRequestParam(AttributeConst.REP_DATE)));
+
+            ReportView id = null;
+            if (service.countByreport_Id(report_date) == null
+                    || service.countByreport_Id(report_date) .equals("")) {
+                id = null;
+            } else {
+                id = service.countByreport_Id(report_date);
+            }
+
+            ReportView ra = null;
+            if (service.countByAfterDate(report_date) == null
+                    || service.countByAfterDate(report_date) .equals("")) {
+                 ra = null;
+            } else {
+             ra = service.countByAfterDate(report_date);
+            }
+
+            ReportView rb = null;
+            if (service.countByBeforeDate(report_date) == null
+                || service.countByBeforeDate(report_date).equals("")) {
+
+                rb = null;
+            } else {
+                rb = service.countByBeforeDate(report_date);
+
+            }
+
             //idを条件に日報データを取得する
             ReportView rv = service.findOne(toNumber(getRequestParam(AttributeConst.REP_ID)));
 
@@ -254,9 +292,8 @@ public class ReportAction extends ActionBase {
             rv.setClock_out(clock_out);
 
 
-
             //日報データを更新する
-            List<String> errors = service.update(rv);
+            List<String> errors = service.update(id,ra,rb,ev,service,rv,clock_in,clock_out);
 
             if (errors.size() > 0) {
                 //更新中にエラーが発生した場合

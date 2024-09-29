@@ -41,7 +41,24 @@ import lombok.Setter;
             query = JpaConst.Q_REP_COUNT_ALL_MINE_DEF),
     @NamedQuery(
             name = JpaConst.Q_REP_COUNT_REGISTERED_BY_REP_DATE,
-            query = JpaConst.Q_REP_COUNT_REGISTERED_BY_REP_DATE_DEF)
+            query = JpaConst.Q_REP_COUNT_REGISTERED_BY_REP_DATE_DEF),
+
+    @NamedQuery(
+            name = JpaConst.Q_REP_GET_REGISTERED_BY_REP_BEFOREDATE,
+            query = JpaConst.Q_REP_GET_REGISTERED_BY_REP_BEFOREDATE_DEF),
+
+    @NamedQuery(
+            name = JpaConst.Q_REP_GET_REGISTERED_BY_REP_AFTERDATE,
+            query = JpaConst.Q_REP_GET_REGISTERED_BY_REP_AFTERDATE_DEF),
+
+    @NamedQuery(
+            name = JpaConst.Q_REP_GET_REGISTERED_BY_REP_DATE,
+            query = JpaConst.Q_REP_GET_REGISTERED_BY_REP_DATE_DEF)
+
+
+
+
+
 })
 
 @Getter //全てのクラスフィールドについてgetterを自動生成する(Lombok)
@@ -65,6 +82,7 @@ public class Report {
     @ManyToOne
     @JoinColumn(name = JpaConst.REP_COL_EMP, nullable = false)
     private Employee employee;
+
 
     /**
      * いつの日報かを示す日付
@@ -108,6 +126,5 @@ public class Report {
      */
     @Column(name = JpaConst.REP_COL_CLOCK_OUT , nullable = false)
     private LocalDateTime clock_out;
+
 }
-
-

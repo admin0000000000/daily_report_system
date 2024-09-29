@@ -52,7 +52,9 @@ public enum AttributeConst {
     REP_START_DATE("start_date"),
     REP_END_DATE("end_date"),
     REP_CLOCK_IN("clock_in"),
-    REP_CLOCK_OUT("clock_out");
+    REP_CLOCK_OUT("clock_out"),
+//追加    
+    REP_EMP("employee_id");
 
 
     private final String text;

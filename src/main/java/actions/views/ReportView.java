@@ -28,6 +28,7 @@ public class ReportView {
      */
     private EmployeeView employee;
 
+
     /**
      * いつの日報かを示す日付
      */

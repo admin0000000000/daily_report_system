@@ -12,6 +12,8 @@ import constants.JpaConst;
 import models.Report;
 import models.validators.ReportValidator;
 
+
+
 /**
  * 日報テーブルの操作に関わる処理を行うクラス
  */
@@ -47,6 +49,7 @@ public class ReportService extends ServiceBase {
         return count;
     }
 
+
     /**
      * 指定されたページ数の一覧画面に表示する日報データを取得し、ReportViewのリストで返却する
      * @param page ページ数
@@ -81,6 +84,7 @@ public class ReportService extends ServiceBase {
 
     }
 
+
     /**
      * idを条件に取得したデータをReportViewのインスタンスで返却する
      * @param id
@@ -90,15 +94,37 @@ public class ReportService extends ServiceBase {
         return ReportConverter.toView(findOneInternal(id));
     }
 
-    //
 
     /**
      * 画面から入力された日報の登録内容を元にデータを1件作成し、日報テーブルに登録する
      * @param rv 日報の登録内容
      * @return バリデーションで発生したエラーのリスト
      */
-    public List<String> create(ReportView rv) {
-        List<String> errors = ReportValidator.validate(rv, this, true);
+    public List<String> create(ReportView id,ReportView ra,ReportView rb,EmployeeView ev,ReportService service,ReportView rv,LocalDateTime clock_in,LocalDateTime clock_out) {
+
+
+        //登録済みの日付を取得する
+       ReportView savedreport_date = countByreport_Id(rv.getReportDate());
+
+        boolean isReport_Date = false;
+
+      if(id!=null) {
+
+          //日付と従業員IDのチェック
+          if (!ev.getId().equals(id.getEmployee().getId())){
+
+             if(savedreport_date.getReportDate().equals(rv.getReportDate())){
+
+
+              //バリデーションを行わない
+              isReport_Date = false;
+              }
+           }
+
+          else{isReport_Date = true;
+          }
+      }
+        List<String> errors = ReportValidator.validate(id,ra,rb,ev,rv,this, isReport_Date);
 
         if (errors.size() == 0) {
             LocalDateTime ldt = LocalDateTime.now();
@@ -111,39 +137,46 @@ public class ReportService extends ServiceBase {
         return errors;
     }
 
-
     /**
      * 画面から入力された日報の登録内容を元に、日報データを更新する
      * @param rv 日報の更新内容
      * @return バリデーションで発生したエラーのリスト
      */
-    public List<String> update(ReportView rv) {
+    public List<String> update(ReportView id,ReportView ra,ReportView rb,EmployeeView ev,ReportService service,ReportView rv,LocalDateTime clock_out,LocalDateTime clock_in) {
+
 
         //登録済みの日付を取得する
-        ReportView savedreport_date = findOne(rv.getId());
+       ReportView savedreport_date = findOne(rv.getId());
 
         boolean isReport_Date = false;
 
-        //日付を変更しない場合
-        if (savedreport_date.getReportDate().equals(rv.getReportDate())) {
+        if(id!=null) {
+
+        //日付と従業員IDのチェック
+        if (ev.getId().equals(id.getEmployee().getId())){
+
+           if(savedreport_date.getReportDate().equals(rv.getReportDate())){
+
 
             //バリデーションを行わない
             isReport_Date = false;
+            }
+           //データベースにすでに登録がある場合はtrue
+           else if (rv.getReportDate() != null && rv.getEmployee().getId()!= null) {
+
+               isReport_Date = true;
+
         }
+         }
 
-        //データベースにすでに登録がある場合はtrue
-        else if (rv.getReportDate() != null) {
-
-            isReport_Date = true;
         }
-
         else {
             //変更後の日報を設定する
             savedreport_date.setReportDate(rv.getReportDate());
         }
 
         //更新内容についてバリデーションを行う
-        List<String> errors = ReportValidator.validate(rv, this, isReport_Date);
+        List<String> errors = ReportValidator.validate(id,ra,rb,ev,rv, this, isReport_Date);
 
         if (errors.size() == 0) {
 
@@ -159,6 +192,37 @@ public class ReportService extends ServiceBase {
     }
 
     /**
+     * 出勤時刻に該当するデータの件数を取得し、返却する
+     * @param clock_in 出勤時刻
+     * @return 重複期間
+     */
+
+    public boolean betweenafter(ReportView rv,LocalDateTime clock_in,LocalDateTime clock_out) {
+
+      //登録済みの日付を取得する
+        ReportView betweenclock_in = findOne(rv.getId());
+
+      //登録済みの期間を返す
+        return betweenclock_in.getClock_out().isBefore(clock_in);
+    }
+
+
+    /**
+     * 退勤時刻に該当するデータの件数を取得し、返却する
+     * @param clock_out 退勤時刻
+     * @return 重複期間
+     */
+
+    public boolean betweenbefore(ReportView rb,ReportView rv,LocalDateTime clock_out,LocalDateTime clock_in) {
+
+      //登録済みの日付を取得する
+      //  ReportView betweenclock_out = findOne(rv.getId());
+
+      //登録済みの期間を返す
+        return rb.getClock_in().isAfter(clock_out);
+    }
+
+    /**
      * 日付を条件に該当するデータの件数を取得し、返却する
      * @param dete 日付
      * @return 該当するデータの件数
@@ -171,6 +235,90 @@ public class ReportService extends ServiceBase {
                 .getSingleResult();
         return reportcount;
     }
+
+    /**
+     * 日付を条件に該当するデータの件数を取得し、返却する
+     * @param dete 日付
+     * @return 該当するデータの件数
+     */
+    public ReportView countByreport_Id(LocalDate report_date) {
+
+        Report id = null;
+
+      //指定した日付を保持する日報を取得する
+        try {
+        id =  em.createNamedQuery(JpaConst.Q_REP_GET_REGISTERED_BY_REP_DATE, Report.class)
+                .setParameter(JpaConst.JPQL_PARM_REP_DATE, report_date)
+                .setMaxResults(1)
+                .getSingleResult();
+
+
+        } catch (Exception e) {
+            return null;
+        }
+
+        return ReportConverter.toView(id);
+    }
+
+
+
+    //1日後
+    /**
+     * 日付を条件に該当するデータの件数を取得し、返却する
+     * @param dete 日付
+     * @return 該当するデータの件数
+     */
+    public ReportView countByAfterDate(LocalDate report_date) {
+
+        LocalDate afterreport_date = report_date.plusDays(1);
+        Report ra = null;
+
+        //指定した日付を保持する日報を取得する
+        try {
+        ra =  em.createNamedQuery(JpaConst.Q_REP_GET_REGISTERED_BY_REP_AFTERDATE, Report.class)
+                .setParameter(JpaConst.JPQL_PARM_REP_AFTERDATE, afterreport_date)
+                .setMaxResults(1)
+                .getSingleResult();
+
+
+        } catch (Exception e) {
+            return null;
+        }
+
+        return ReportConverter.toView(ra);
+    }
+
+
+
+    //1日前
+    /**
+     * 日付を条件に該当するデータの件数を取得し、返却する
+     * @param dete 日付
+     * @return 該当するデータの件数
+     */
+    public ReportView countByBeforeDate(LocalDate report_date) {
+
+        LocalDate beforereport_date = report_date.minusDays(1);
+        Report rb = null;
+
+        //指定した日付を保持する日報を取得する
+
+        try {
+        rb =  em.createNamedQuery(JpaConst.Q_REP_GET_REGISTERED_BY_REP_BEFOREDATE, Report.class)
+                .setParameter(JpaConst.JPQL_PARM_REP_BEFOREDATE, beforereport_date)
+                .setMaxResults(1)
+                .getSingleResult();
+
+
+        } catch (Exception e) {
+            return null;
+        }
+
+        return ReportConverter.toView(rb);
+    }
+
+
+
 
     /**
      * 日付を条件にデータを1件取得する
@@ -189,6 +337,9 @@ public class ReportService extends ServiceBase {
     private Report findOneInternal(int id) {
         return em.find(Report.class, id);
     }
+
+
+
 
     /**
      * 日報データを1件登録する
@@ -213,6 +364,9 @@ public class ReportService extends ServiceBase {
         ReportConverter.copyViewToModel(r, rv);
         em.getTransaction().commit();
 
-    }
+        }
 
-}
+  }
+
+
+
